@@ -7,15 +7,15 @@
 
 with tripdata as (
     select
-        * except(dispatching_base_num),
-        cast(dispatching_base_num as string) as dispatching_base_num
+        * ,
+        row_number() over(partition by dispatching_base_num, pickup_datetime) as rn
     from {{ source('staging', 'fhv_data') }}
     where dispatching_base_num is not null
 )
 select
-    {{ dbt_utils.surrogate_key(['dispatching_base_num', 'pickup_datetime']) }} as tripid,
-    cast(dispatching_base_num as integer) as vendorid,
-    cast(null as integer) as ratecodeid,
+    {{ dbt_utils.generate_surrogate_key(['dispatching_base_num', 'pickup_datetime']) }} as tripid,
+    cast(dispatching_base_num as string) as vendorid,
+
     cast(pulocationid as integer) as  pickup_locationid,
     cast(dolocationid as integer) as dropoff_locationid,
     
@@ -24,25 +24,10 @@ select
     cast(dropoff_datetime as timestamp) as dropoff_datetime,
     
     -- trip info
-    cast(null as string) as store_and_fwd_flag,
-    cast(null as integer) as passenger_count,
-    cast(null as numeric) as trip_distance,
-    -- yellow cabs are always street-hail
-    2 as trip_type,
+    cast(sr_flag as integer) as trip_type,
     
-    -- payment info
-    cast(null as numeric) as fare_amount,
-    cast(null as numeric) as extra,
-    cast(null as numeric) as mta_tax,
-    cast(null as numeric) as tip_amount,
-    cast(null as numeric) as tolls_amount,
-    cast(0 as numeric) as ehail_fee,
-    cast(null as numeric) as improvement_surcharge,
-    cast(null as numeric) as total_amount,
-    cast(null as integer) as payment_type,
-    cast(null as string) as payment_type_description, 
-    cast(null as numeric) as congestion_surcharge,
 from tripdata
+where rn = 1
 -- dbt build --m <model.sql> --var 'is_test_run: false'
 {% if var('is_test_run', default=true) %}
 
