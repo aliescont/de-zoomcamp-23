@@ -13,7 +13,7 @@ with green_data as (
 , yellow_data as (
     select
         *,
-        'Green' as service_type
+        'Yellow' as service_type
     from {{ ref('stg_yellow_tripdata') }}
 )
 , trips_unioned as (
