@@ -1,0 +1,81 @@
+name: PR Transformation and Comparison (Slim CI)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+      # Trigger when PR is created and/or head of branch is updated.
+    branches: [ "main" ]
+      # Only PR target is `main`
+    paths:
+      - models/**
+      - seeds/**
+      - tests/**
+
+env:
+  DBT_PROFILES_DIR: ./
+  DBT_GOOGLE_PROJECT: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
+  DBT_GOOGLE_BIGQUERY_DATASET: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET }}
+  DBT_GOOGLE_BIGQUERY_KEYFILE: ./dbt-service-account.json
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+        
+      - name: Authenticate using service account
+        run: 'echo "$KEYFILE" > ./dbt-service-account.json'
+        shell: bash
+        env:
+          KEYFILE: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+
+      - name: checkout PR Branch
+        uses: actions/checkout@master
+        
+      - name: Setup Piperider
+        run: |
+          pip install dbt-bigquery
+          pip install piperider['bigquery']
+          dbt deps
+
+      - name: dbt build PR env
+        run: dbt build --target pr
+
+      - name: Piperider profile on PR env
+        run: piperider run --datasource pr --dbt-state target -o /tmp/piperider/pr
+
+      - name: Checkout main branch
+        uses: ctions/checkout@master
+        with: 
+          ref: main
+          
+      - name: install dbt deps
+        run: dbt deps
+      
+      - name: dbt build PROD env
+        run: dbt build --target prod
+        
+      - name: Piperider profile on PROD env
+        run: piperider run --datasource prod --dbt-state target -o /tmp/piperider/prod
+      
+      - name: compare reports
+        run: |
+          piperider compare-reports \
+          --base /tmp/piperider/prod/run.json
+          --target /tmp/piperider/prod/run.json
+          -o /tmp/piperider/comparison
+
+      - name: Create PR Comment
+        uses: peter-evans/create-or-update-comment@v2.1.0
+        with:
+          issue-number: ${{ github.event.number }}
+          body-file: /tmp/piperider/comparison/summary.md
+          
+      - name: Create run artifact
+        run: zip -r comparison-report.zip /tmp/piperider/comparison/summary.md
