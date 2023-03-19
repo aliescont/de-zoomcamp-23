@@ -1,4 +1,4 @@
-name: PR Transformation and Comparison (Slim CI)
+name: Piperider comparison (Slim CI)
 
 on:
   pull_request:
@@ -51,7 +51,7 @@ jobs:
         run: piperider run --datasource pr --dbt-state target -o /tmp/piperider/pr
 
       - name: Checkout main branch
-        uses: ctions/checkout@master
+        uses: actions/checkout@master
         with: 
           ref: main
           
