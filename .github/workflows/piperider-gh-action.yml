@@ -1,6 +1,8 @@
 name: Piperider comparison (Slim CI)
 
 on:
+  workflow_dispatch:
+  
   pull_request:
     types: [opened, synchronize, reopened]
       # Trigger when PR is created and/or head of branch is updated.
