@@ -52,7 +52,9 @@ jobs:
         working-directory: ./week_4_analytics_engineering
         env:
           super_secret: ${{ secrets.SuperSecret}}
-        run: dbt build --target pr
+        run: |
+          dbt seed --target pr
+          dbt build --target pr
 
       - name: Piperider profile on PR env
         working-directory: ./week_4_analytics_engineering
@@ -69,7 +71,9 @@ jobs:
       
       - name: dbt build PROD env
         working-directory: ./week_4_analytics_engineering
-        run: dbt build --target prod
+        run:  |
+          dbt seed --target prod
+          dbt build --target prod
         
       - name: Piperider profile on PROD env
         working-directory: ./week_4_analytics_engineering
