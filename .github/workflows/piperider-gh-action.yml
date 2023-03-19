@@ -41,6 +41,7 @@ jobs:
         uses: actions/checkout@master
         
       - name: Setup Piperider
+        working-directory: ./week_4_analytics_engineering
         run: |
           pip install dbt-bigquery
           pip install piperider['bigquery']
