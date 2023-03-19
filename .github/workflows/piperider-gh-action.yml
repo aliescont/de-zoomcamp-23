@@ -46,7 +46,7 @@ jobs:
         run: 'echo "$KEYFILE" > ./dbt-service-account.json'
         shell: bash
         env:
-          KEYFILE: ${{ vars.DBT_GOOGLE_BIGQUERY_KEYFILE }}
+          KEYFILE: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE }}
 
       - name: dbt build PR env
         working-directory: ./week_4_analytics_engineering
