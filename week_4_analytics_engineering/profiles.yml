@@ -1,0 +1,21 @@
+
+
+my-bigquery-db:
+  target: pr
+  outputs:
+    pr:
+      type: bigquery
+      method: service-account
+      project: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
+      dataset: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET }}
+      threads: 4
+      keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+      location: europe-west3
+    prod:
+      type: bigquery
+      method: service-account
+      project: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
+      dataset: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_DEV }}
+      threads: 4
+      keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+      location: europe-west3 
