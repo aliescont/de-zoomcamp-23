@@ -15,9 +15,9 @@ on:
 
 env:
   DBT_PROFILES_DIR: ./
-  DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
+  DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ vars.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
   DBT_GOOGLE_BIGQUERY_DATASET_PR: ${{ vars.DBT_GOOGLE_BIGQUERY_DATASET_PR }}
-  DBT_GOOGLE_BIGQUERY_PROJECT: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
+  DBT_GOOGLE_BIGQUERY_PROJECT: ${{ vars.DBT_GOOGLE_BIGQUERY_PROJECT }}
   DBT_GOOGLE_BIGQUERY_KEYFILE: ./dbt-service-account.json
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
         run: 'echo "$KEYFILE" > ./dbt-service-account.json'
         shell: bash
         env:
-          KEYFILE: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+          KEYFILE: ${{ vars.DBT_GOOGLE_BIGQUERY_KEYFILE }}
 
       - name: checkout PR Branch
         uses: actions/checkout@master
