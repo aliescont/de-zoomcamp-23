@@ -6,16 +6,16 @@ dbt-models:
     pr:
       type: bigquery
       method: service-account
-      project: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
+      project: "${{ env_var('DBT_GOOGLE_BIGQUERY_PROJECT')}}" 
       dataset: "${{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_PR')}}"
       threads: 4
-      keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+      keyfile: "${{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE')}}"
       location: europe-southwest1
     prod:
       type: bigquery
       method: service-account
-      project: ${{ secrets.DBT_GOOGLE_BIGQUERY_PROJECT }}
-      dataset: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
+      project: "${{ env_var('DBT_GOOGLE_BIGQUERY_PROJECT')}}" 
+      dataset: "${{ env_var('DBT_GOOGLE_BIGQUERY_DATASET_PR')}}"
       threads: 4
-      keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
+      keyfile: "${{ env_var('DBT_GOOGLE_BIGQUERY_KEYFILE')}}"
       location: europe-southwest1 
