@@ -50,6 +50,8 @@ jobs:
 
       - name: dbt build PR env
         working-directory: ./week_4_analytics_engineering
+        env:
+          super_secret: ${{ secrets.SuperSecret}}
         run: dbt build --target pr
 
       - name: Piperider profile on PR env
