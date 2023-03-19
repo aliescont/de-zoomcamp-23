@@ -43,6 +43,7 @@ jobs:
           dbt deps
           
       - name: Authenticate using service account
+        working-directory: ./week_4_analytics_engineering
         run: 'echo "$KEYFILE" > ./dbt-service-account.json'
         shell: bash
         env:
