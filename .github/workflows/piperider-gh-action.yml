@@ -48,9 +48,11 @@ jobs:
           dbt deps
 
       - name: dbt build PR env
+        working-directory: ./week_4_analytics_engineering
         run: dbt build --target pr
 
       - name: Piperider profile on PR env
+        working-directory: ./week_4_analytics_engineering
         run: piperider run --datasource pr --dbt-state target -o /tmp/piperider/pr
 
       - name: Checkout main branch
@@ -59,15 +61,19 @@ jobs:
           ref: main
           
       - name: install dbt deps
+        working-directory: ./week_4_analytics_engineering
         run: dbt deps
       
       - name: dbt build PROD env
+        working-directory: ./week_4_analytics_engineering
         run: dbt build --target prod
         
       - name: Piperider profile on PROD env
+        working-directory: ./week_4_analytics_engineering
         run: piperider run --datasource prod --dbt-state target -o /tmp/piperider/prod
       
       - name: compare reports
+        working-directory: ./week_4_analytics_engineering
         run: |
           piperider compare-reports \
           --base /tmp/piperider/prod/run.json
