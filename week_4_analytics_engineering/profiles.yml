@@ -10,7 +10,7 @@ dbt-models:
       dataset: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PR }}
       threads: 4
       keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
-      location: europe-west3
+      location: europe-southwest1
     prod:
       type: bigquery
       method: service-account
@@ -18,4 +18,4 @@ dbt-models:
       dataset: ${{ secrets.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
       threads: 4
       keyfile: ${{secrets.DBT_GOOGLE_BIGQUERY_KEYFILE}}
-      location: europe-west3 
+      location: europe-southwest1 
