@@ -1,6 +1,6 @@
 
 
-my-bigquery-db:
+default:
   target: pr
   outputs:
     pr:
