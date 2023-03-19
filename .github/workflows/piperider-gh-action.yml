@@ -18,7 +18,7 @@ env:
   DBT_GOOGLE_BIGQUERY_DATASET_PROD: ${{ vars.DBT_GOOGLE_BIGQUERY_DATASET_PROD }}
   DBT_GOOGLE_BIGQUERY_DATASET_PR: ${{ vars.DBT_GOOGLE_BIGQUERY_DATASET_PR }}
   DBT_GOOGLE_BIGQUERY_PROJECT: ${{ vars.DBT_GOOGLE_BIGQUERY_PROJECT }}
-  DBT_GOOGLE_BIGQUERY_KEYFILE: ./dbt-service-account.json
+  DBT_GOOGLE_BIGQUERY_KEYFILE: /tmpp/gcloud/dbt-service-account.json
 
 jobs:
   build:
@@ -44,10 +44,12 @@ jobs:
           
       - name: Authenticate using service account
         working-directory: ./week_4_analytics_engineering
-        run: 'echo "$KEYFILE" > ./dbt-service-account.json'
+        run: |
+          'mkdir -p /tmp/gcloud'
+          'echo "$KEYFILE" > tmp/gcloud/dbt-service-account.json'
         shell: bash
         env:
-          KEYFILE: ${{ secrets.DBT_GOOGLE_BIGQUERY_KEYFILE }}
+          KEYFILE: ${{ vars.DBT_GOOGLE_BIGQUERY_KEYFILE }}
 
       - name: dbt build PR env
         working-directory: ./week_4_analytics_engineering
